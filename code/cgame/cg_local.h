@@ -1301,7 +1301,7 @@ extern vmCvar_t           cg_stats;
 extern vmCvar_t           cg_drawFriend;
 extern vmCvar_t           cg_buildScript;
 extern vmCvar_t           cg_paused;
-extern vmCvar_t           com_blood;
+extern vmCvar_t           cg_blood;
 extern vmCvar_t           cg_synchronousClients;
 extern vmCvar_t           cg_cameraOrbit;
 extern vmCvar_t           cg_cameraOrbitDelay;
@@ -1372,7 +1372,7 @@ extern vmCvar_t           cg_trueLightning;
 extern vmCvar_t           cg_useScreenShotJPEG;
 extern vmCvar_t           ch_3waveFont;
 extern vmCvar_t           ch_ColorLocations;
-extern vmCvar_t           cg_CrosshairColor;
+extern vmCvar_t           cg_crosshairColor;
 extern vmCvar_t           cf_CrosshairNames;
 extern vmCvar_t           ch_CrosshairNamesLeft;
 extern vmCvar_t           ch_crosshairTeamInfo;
@@ -1835,14 +1835,14 @@ void CG_UpdateWeaponDlightColor(weapon_t weapon);
 //
 // cg_marks.c
 //
-void    CG_InitMarkPolys(void);
-void    CG_AddMarks(void);
-void    CG_ImpactMark(qhandle_t markShader,
-                      const vec3_t origin, const vec3_t dir,
-                      float orientation,
-                      float r, float g, float b, float a,
-                      qboolean alphaFade,
-                      float radius, qboolean temporary, qboolean force);
+void	CG_InitMarkPolys( void );
+void	CG_AddMarks( void );
+void	CG_ImpactMark( qhandle_t markShader, 
+				    const vec3_t origin, const vec3_t dir, 
+					float orientation, 
+				    float r, float g, float b, float a, 
+					qboolean alphaFade, 
+					float radius, qboolean temporary );
 
 //
 // cg_localents.c
@@ -1867,10 +1867,10 @@ void CG_BubbleTrail(vec3_t start, vec3_t end, float spacing);
 void CG_SpawnEffect(vec3_t org);
 void CG_ScorePlum(int client, vec3_t org, int score);
 
-void CG_GibPlayer(vec3_t playerOrigin);
+//void CG_GibPlayer(vec3_t playerOrigin);
 void CG_BigExplode(vec3_t playerOrigin);
 
-void CG_Bleed(vec3_t origin, int entityNum);
+//void CG_Bleed(vec3_t origin, int entityNum);
 
 localEntity_t* CG_MakeExplosion(vec3_t origin, vec3_t dir,
                                 qhandle_t hModel, qhandle_t shader, int msec,

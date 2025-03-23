@@ -141,48 +141,44 @@ temporary marks will not be stored or randomly oriented, but immediately
 passed to the renderer.
 =================
 */
-#define MAX_MARK_FRAGMENTS  128
-#define MAX_MARK_POINTS     384
+#define	MAX_MARK_FRAGMENTS	128
+#define	MAX_MARK_POINTS		384
 
-void CG_ImpactMark(qhandle_t markShader, const vec3_t origin, const vec3_t dir,
-                   float orientation, float red, float green, float blue, float alpha,
-                   qboolean alphaFade, float radius, qboolean temporary, qboolean force)
-{
-	vec3_t          axis[3];
-	float           texCoordScale;
-	vec3_t          originalPoints[4];
-	byte            colors[4];
-	int             i, j;
-	int             numFragments;
-	markFragment_t  markFragments[MAX_MARK_FRAGMENTS], *mf;
-	vec3_t          markPoints[MAX_MARK_POINTS];
-	vec3_t          projection;
+void CG_ImpactMark( qhandle_t markShader, const vec3_t origin, const vec3_t dir, 
+				   float orientation, float red, float green, float blue, float alpha,
+				   qboolean alphaFade, float radius, qboolean temporary ) {
+	vec3_t			axis[3];
+	float			texCoordScale;
+	vec3_t			originalPoints[4];
+	byte			colors[4];
+	int				i, j;
+	int				numFragments;
+	markFragment_t	markFragments[MAX_MARK_FRAGMENTS], *mf;
+	vec3_t			markPoints[MAX_MARK_POINTS];
+	vec3_t			projection;
 
-	if (!cg_addMarks.integer && !force)
-	{
+	if ( !cg_addMarks.integer && !temporary ) {
 		return;
 	}
 
-	if (radius <= 0)
-	{
-		CG_Error("CG_ImpactMark called with <= 0 radius");
+	if ( radius <= 0 ) {
+		CG_Error( "CG_ImpactMark called with <= 0 radius" );
 	}
 
 	//if ( markTotal >= MAX_MARK_POLYS ) {
-	//  return;
+	//	return;
 	//}
 
 	// create the texture axis
-	VectorNormalize2(dir, axis[0]);
-	PerpendicularVector(axis[1], axis[0]);
-	RotatePointAroundVector(axis[2], axis[0], axis[1], orientation);
-	CrossProduct(axis[0], axis[2], axis[1]);
+	VectorNormalize2( dir, axis[0] );
+	PerpendicularVector( axis[1], axis[0] );
+	RotatePointAroundVector( axis[2], axis[0], axis[1], orientation );
+	CrossProduct( axis[0], axis[2], axis[1] );
 
 	texCoordScale = 0.5 * 1.0 / radius;
 
 	// create the full polygon
-	for (i = 0 ; i < 3 ; i++)
-	{
+	for ( i = 0 ; i < 3 ; i++ ) {
 		originalPoints[0][i] = origin[i] - radius * axis[1][i] - radius * axis[2][i];
 		originalPoints[1][i] = origin[i] + radius * axis[1][i] - radius * axis[2][i];
 		originalPoints[2][i] = origin[i] + radius * axis[1][i] + radius * axis[2][i];
@@ -190,44 +186,40 @@ void CG_ImpactMark(qhandle_t markShader, const vec3_t origin, const vec3_t dir,
 	}
 
 	// get the fragments
-	VectorScale(dir, -20, projection);
-	numFragments = trap_CM_MarkFragments(4, (void*)originalPoints,
-	                                     projection, MAX_MARK_POINTS, markPoints[0],
-	                                     MAX_MARK_FRAGMENTS, markFragments);
+	VectorScale( dir, -20, projection );
+	numFragments = trap_CM_MarkFragments( 4, (void *)originalPoints,
+					projection, MAX_MARK_POINTS, markPoints[0],
+					MAX_MARK_FRAGMENTS, markFragments );
 
 	colors[0] = red * 255;
 	colors[1] = green * 255;
 	colors[2] = blue * 255;
 	colors[3] = alpha * 255;
 
-	for (i = 0, mf = markFragments ; i < numFragments ; i++, mf++)
-	{
-		polyVert_t*  v;
-		polyVert_t  verts[MAX_VERTS_ON_POLY];
-		markPoly_t*  mark;
+	for ( i = 0, mf = markFragments ; i < numFragments ; i++, mf++ ) {
+		polyVert_t	*v;
+		polyVert_t	verts[MAX_VERTS_ON_POLY];
+		markPoly_t	*mark;
 
 		// we have an upper limit on the complexity of polygons
 		// that we store persistantly
-		if (mf->numPoints > MAX_VERTS_ON_POLY)
-		{
+		if ( mf->numPoints > MAX_VERTS_ON_POLY ) {
 			mf->numPoints = MAX_VERTS_ON_POLY;
 		}
-		for (j = 0, v = verts ; j < mf->numPoints ; j++, v++)
-		{
-			vec3_t      delta;
+		for ( j = 0, v = verts ; j < mf->numPoints ; j++, v++ ) {
+			vec3_t		delta;
 
-			VectorCopy(markPoints[mf->firstPoint + j], v->xyz);
+			VectorCopy( markPoints[mf->firstPoint + j], v->xyz );
 
-			VectorSubtract(v->xyz, origin, delta);
-			v->st[0] = 0.5 + DotProduct(delta, axis[1]) * texCoordScale;
-			v->st[1] = 0.5 + DotProduct(delta, axis[2]) * texCoordScale;
-			memcpy(v->modulate, colors, sizeof(v->modulate));
+			VectorSubtract( v->xyz, origin, delta );
+			v->st[0] = 0.5 + DotProduct( delta, axis[1] ) * texCoordScale;
+			v->st[1] = 0.5 + DotProduct( delta, axis[2] ) * texCoordScale;
+			*(int *)v->modulate = *(int *)colors;
 		}
 
 		// if it is a temporary (shadow) mark, add it immediately and forget about it
-		if (temporary)
-		{
-			trap_R_AddPolyToScene(markShader, mf->numPoints, verts);
+		if ( temporary ) {
+			trap_R_AddPolyToScene( markShader, mf->numPoints, verts );
 			continue;
 		}
 
@@ -241,7 +233,7 @@ void CG_ImpactMark(qhandle_t markShader, const vec3_t origin, const vec3_t dir,
 		mark->color[1] = green;
 		mark->color[2] = blue;
 		mark->color[3] = alpha;
-		memcpy(mark->verts, verts, mf->numPoints * sizeof(verts[0]));
+		memcpy( mark->verts, verts, mf->numPoints * sizeof( verts[0] ) );
 		markTotal++;
 	}
 }

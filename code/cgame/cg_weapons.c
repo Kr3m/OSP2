@@ -2407,12 +2407,11 @@ void CG_MissileHitWall(int weapon, int clientNum, vec3_t origin, vec3_t dir, imp
 		float*   color;
 
 		// colorize with client color
-		color = cgs.clientinfo[clientNum].colors.railRings;
-		CG_ImpactMark(mark, origin, dir, random() * 360, color[0], color[1], color[2], 1, alphaFade, radius, qfalse, qfalse);
-	}
-	else
-	{
-		CG_ImpactMark(mark, origin, dir, random() * 360, 1, 1, 1, 1, alphaFade, radius, qfalse, qfalse);
+		color = cgs.clientinfo[ clientNum ].colors.railRings;
+
+		CG_ImpactMark( mark, origin, dir, random()*360, color[0], color[1], color[2], 1.0, alphaFade, radius, qfalse );
+	} else {
+		CG_ImpactMark( mark, origin, dir, random()*360, 1.0, 1.0, 1.0, 1.0, alphaFade, radius, qfalse );
 	}
 }
 

@@ -146,7 +146,7 @@ vmCvar_t           cg_stats;
 vmCvar_t           cg_drawFriend;
 vmCvar_t           cg_buildScript;
 vmCvar_t           cg_paused;
-vmCvar_t           com_blood;
+vmCvar_t           cg_blood;
 vmCvar_t           cg_synchronousClients;
 vmCvar_t           cg_cameraOrbit;
 vmCvar_t           cg_cameraOrbitDelay;
@@ -323,7 +323,7 @@ vmCvar_t           cg_crosshairAspectRatioFix;
 vmCvar_t           cg_crosshairHealth;
 vmCvar_t           cg_crosshairX;
 vmCvar_t           cg_crosshairY;
-vmCvar_t           ch_CrosshairColor;
+vmCvar_t           cg_crosshairColor;
 vmCvar_t           cg_crosshairPulse;
 vmCvar_t           cf_CrosshairNames;
 vmCvar_t           ch_CrosshairNamesLeft;
@@ -450,7 +450,7 @@ static cvarTable_t cvarTable[] =
 	{ &cg_drawFriend, "cg_drawFriend", "1", CVAR_ARCHIVE },
 	{ &cg_buildScript, "com_buildScript", "0",  },
 	{ &cg_paused, "cl_paused", "0", CVAR_ROM },
-	{ &com_blood, "com_blood", "1", CVAR_ARCHIVE },
+	{ &cg_blood, "com_blood", "1", CVAR_ARCHIVE },
 	{ &cg_synchronousClients, "g_synchronousClients", "0",  },
 	{ &cg_cameraOrbit, "cg_cameraOrbit", "0", CVAR_CHEAT },
 	{ &cg_cameraOrbitDelay, "cg_cameraOrbitDelay", "50", CVAR_ARCHIVE },
@@ -520,7 +520,7 @@ static cvarTable_t cvarTable[] =
 	{ &cg_useScreenShotJPEG, "cg_useScreenShotJPEG", "0", CVAR_ARCHIVE, CG_LocalEventCvarChanged_cg_useScreenShotJPEG},
 	{ &ch_3waveFont, "ch_3waveFont", "0", CVAR_ARCHIVE },
 	{ &ch_ColorLocations, "ch_ColorLocations", "1", CVAR_ARCHIVE },
-	{ &ch_CrosshairColor, "ch_crosshairColor", "White", CVAR_ARCHIVE, CG_LocalEventCvarChanged_ch_crosshairColor},
+	{ &cg_crosshairColor, "cg_crosshairColor", "White", CVAR_ARCHIVE, CG_LocalEventCvarChanged_ch_crosshairColor},
 	{ &cf_CrosshairNames, "cf_CrosshairNames", "12x12", CVAR_ARCHIVE },
 	{ &ch_CrosshairNamesLeft, "ch_CrosshairNamesLeft", "0", CVAR_ARCHIVE },
 	{ &ch_crosshairTeamInfo, "ch_crosshairTeamInfo", "1", CVAR_ARCHIVE },
@@ -1644,7 +1644,7 @@ int CG_Init(int serverMessageNum, int serverCommandSequence, int clientNum)
 	CG_RegisterCvars();
 
 	//init variables
-	CG_CvarTouch("ch_crosshairColor");
+	CG_CvarTouch("cg_crosshairColor");
 	CG_CvarTouch("ch_crosshairActionColor");
 	CG_CvarTouch("ch_crosshairDecorColor");
 	CG_CvarTouch("ch_crosshairDecorActionColor");
